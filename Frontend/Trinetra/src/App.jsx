@@ -7,6 +7,7 @@ import Contact from "./Pages/Contact";
 import EventTimeline from "./Components/Home/EventTimeline";
 import Booking from "./Pages/Booking";
 import BookingForm from "./Pages/Book";
+import KumbhMelaMonitor from "./Pages/HeatMap_Dashboard";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/slots" element={<Booking />} />
             <Route path="/book" element={<BookingForm />} />
-
+            <Route path="/dashboard" element={<KumbhMelaMonitor />} />
           </Routes>
         </main>
         <Footer />
