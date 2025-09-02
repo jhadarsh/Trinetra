@@ -2,9 +2,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import Home from "./Pages/Home";
-import About from "./Pages/About";
+import About from "./Components/Home/About";
 import Contact from "./Pages/Contact";
-import Menu from "./Pages/Menu";
+import EventTimeline from "./Components/Home/EventTimeline";
+import Booking from "./Pages/Booking";
+import BookingForm from "./Pages/Book";
 
 function App() {
   return (
@@ -15,8 +17,11 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
-            <Route path="/menu" element={<Menu />} />
+            <Route path="/events" element={<EventTimeline/>} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/slots" element={<Booking />} />
+            <Route path="/book" element={<BookingForm />} />
+
           </Routes>
         </main>
         <Footer />
