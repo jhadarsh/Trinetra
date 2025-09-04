@@ -340,7 +340,7 @@ if __name__ == '__main__':
     if os.path.exists(MODEL_PATH):
         if load_model(MODEL_PATH):
             print("🚀 Starting Crowd Counting API...")
-            print("🌐 API will be available at: http://localhost:5000")
+            print("🌐 API will be available at: http://localhost:3000")
             print("📡 Endpoints:")
             print("   GET  /        - API documentation")
             print("   GET  /health  - Health check")
@@ -350,7 +350,7 @@ if __name__ == '__main__':
             print("   🟡 Yellow: Moderate congestion") 
             print("   🔴 Red: High congestion")
             
-            app.run(host='0.0.0.0', port=5000, debug=False)
+            app.run(host='0.0.0.0', port=3000, debug=False)
         else:
             print("❌ Failed to load model. API not started.")
     else:
