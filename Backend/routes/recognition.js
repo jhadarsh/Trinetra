@@ -24,7 +24,7 @@ const cameraFolderKey = 'Camera/';
 const upload = multer({ 
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 } // Optional: Set a file size limit (e.g., 10MB)
-});
+}); 
 
 // The `upload.single('imageData')` middleware is now used on the route.
 // It will parse the incoming 'multipart/form-data' and make the file available on `req.file`.

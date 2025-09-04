@@ -1,29 +1,32 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import Ticket from "./Ticket";
 
-export default function BookingForm() {
+export default function BookingForm({ preselectedSlot, onBookingSuccess }) {
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
     email: "",
     aadhaarNumber: "",
-    slotId: "",
+    slotId: preselectedSlot || "",
     numberOfPeople: 1,
   });
 
-  const [slots, setSlots] = useState([]); // store available slots
+  const [slots, setSlots] = useState([]); 
+  const [loadingSlots, setLoadingSlots] = useState(true);
+  const [ticketData, setTicketData] = useState(null);
 
-  // Fetch slots from backend when component loads
   useEffect(() => {
     const fetchSlots = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/slots"); // your GET route
-        setSlots(response.data); // assuming response.data is array of slots
+        const response = await axios.get("http://localhost:5000/api/slots");
+        setSlots(response.data);
       } catch (error) {
         console.error("❌ Error fetching slots:", error.message);
+      } finally {
+        setLoadingSlots(false);
       }
     };
-
     fetchSlots();
   }, []);
 
@@ -42,25 +45,45 @@ export default function BookingForm() {
           email: formData.email,
           aadhaarNumber: formData.aadhaarNumber,
         },
-        slot: formData.slotId, // selected slotId
+        slot: formData.slotId,
         bookingDetails: {
           numberOfPeople: formData.numberOfPeople,
         },
       });
 
       console.log("✅ Booking successful:", response.data);
-      alert("Booking created successfully!");
+
+      const bookedSlot = slots.find((s) => s._id === formData.slotId);
+
+      setTicketData({
+        name: formData.fullName,
+        people: formData.numberOfPeople,
+        date: bookedSlot?.date,
+        time: bookedSlot?.time,
+        ghat: bookedSlot?.ghat,
+      });
+
     } catch (error) {
       console.error("❌ Booking failed:", error.response?.data || error.message);
       alert("Booking failed: " + (error.response?.data?.message || "Server error"));
     }
   };
 
+  if (ticketData) {
   return (
-    <form 
-      onSubmit={handleSubmit} 
-      className="max-w-md mx-auto mt-20 p-6 bg-white shadow-lg rounded-xl space-y-4"
-    >
+    <Ticket 
+      fullName={ticketData.name}
+      numberOfPeople={ticketData.people}
+      date={ticketData.date}
+      slot={`${ticketData.time} – ${ticketData.ghat}`} // combine nicely
+      autoDownload={true}
+    />
+  );
+}
+
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 w-full pt-8  ">
       <input
         type="text"
         name="fullName"
@@ -97,23 +120,21 @@ export default function BookingForm() {
         required
         className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-
-      {/* Dropdown for slot selection */}
       <select
         name="slotId"
         value={formData.slotId}
         onChange={handleChange}
         required
+        disabled={loadingSlots}
         className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         <option value="">-- Select a Slot --</option>
         {slots.map((slot) => (
           <option key={slot._id} value={slot._id}>
-            {slot.date} 
+            {new Date(slot.date).toLocaleDateString("en-GB")} ({slot.time} – {slot.ghat})
           </option>
         ))}
       </select>
-
       <input
         type="number"
         name="numberOfPeople"
@@ -124,10 +145,9 @@ export default function BookingForm() {
         min="1"
         className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-
       <button 
         type="submit" 
-        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+        className="w-full bg-gradient-to-r from-orange-500 to-purple-600 hover:scale-105 text-white py-2 rounded-lg hover:bg-blue-700 transition"
       >
         Book Slot
       </button>

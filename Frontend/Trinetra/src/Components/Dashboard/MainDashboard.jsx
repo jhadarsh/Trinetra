@@ -15,13 +15,13 @@ const Popup = ({ ghat, isVisible, position, onClose }) => {
   };
 
   const ghatDisplayImages = {
-    "Har Ki Pauri":
+    "Ghat 1":
       "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=200&fit=crop",
     "Dashashwamedh":
       "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=400&h=200&fit=crop",
     "Manikarnika":
       "https://images.unsplash.com/photo-1512813195386-6cf811ad3542?w=400&h=200&fit=crop",
-    "Assi Ghat":
+    "Ghat 4":
       "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop",
   };
 
