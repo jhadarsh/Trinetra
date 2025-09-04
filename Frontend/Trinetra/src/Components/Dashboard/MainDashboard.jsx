@@ -8,20 +8,20 @@ const Popup = ({ ghat, isVisible, position, onClose }) => {
 
   // Fixed image paths - Remove leading slash if using public folder
   const ghatImageFiles = {
-    "Har Ki Pauri": "testing1.png",
-    "Dashashwamedh": "testing2.jpg",
-    "Manikarnika": "testing3.jpg",
-    "Assi Ghat": "testing6.jpg",
+    "Ghat 1": "testing1.png",
+    "Ghat 2": "testing2.jpg",
+    "Ghat 3": "testing3.jpg",
+    "Ghat 4": "testing6.jpg",
   };
 
   const ghatDisplayImages = {
-    "Har Ki Pauri":
+    "Ghat 1":
       "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=200&fit=crop",
-    Dashashwamedh:
+    "Ghat 2":
       "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=400&h=200&fit=crop",
-    Manikarnika:
+    "Ghat 3":
       "https://images.unsplash.com/photo-1512813195386-6cf811ad3542?w=400&h=200&fit=crop",
-    "Assi Ghat":
+    "Ghat 4":
       "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop",
   };
 
@@ -404,25 +404,25 @@ const Ghats = ({ onGhatClick }) => {
     // Position these manually on your background image
     {
       id: 1,
-      name: "Har Ki Pauri",
+      name: "Ghat 1",
       population: 45000,
       position: { top: "40%", left: "20%" },
     },
     {
       id: 2,
-      name: "Dashashwamedh",
+      name: "Ghat 2",
       population: 85000,
       position: { top: "60%", left: "10%" },
     },
     {
       id: 3,
-      name: "Assi Ghat",
+      name: "Ghat 4",
       population: 35000,
       position: { top: "60%", right: "10%" },
     },
     {
       id: 4,
-      name: "Manikarnika",
+      name: "Ghat 3",
       population: 95000,
       position: { top: "40%", right: "15%" },
     },
