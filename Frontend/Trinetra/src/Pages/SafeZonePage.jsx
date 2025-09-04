@@ -173,12 +173,13 @@ const SafeZonePage = () => {
         onMouseEnter={() => setIsMapHovered(true)}
         onMouseLeave={() => setIsMapHovered(false)}
         onClick={handleDownloadPDF}
-        style={{
-          backgroundImage: url('mapimg.png'),
-          backgroundSize: "120%",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat"
-        }}
+      style={{
+  backgroundImage: "url('mapimg.png')",
+  backgroundSize: "120%",
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat"
+}}
+
       >
         <AnimatePresence>
           {isMapHovered && (

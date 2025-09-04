@@ -11,7 +11,11 @@ import KumbhMelaMonitor from "./Pages/HeatMap_Dashboard";
 import LostAndFoundPage from "./Pages/LostAndFoundPage";
 import SafeZonePage from "./Pages/SafeZonePage";
 import Dashboard from "./authority/dashboard";
+ 
 import Guide from "./Pages/Guide";
+ 
+import Ticket from "./Pages/Ticket";
+ 
 
 
 function AppWrapper() {
