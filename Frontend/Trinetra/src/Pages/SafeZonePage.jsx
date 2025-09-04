@@ -33,7 +33,7 @@ const SafeZonePage = () => {
         title: "Ghat 2 - Main Ghat",
         description:
           "Central location with all amenities. Most visited spot with cultural activities.",
-        logo: "🏛️",
+        logo: "🏛",
         tourLink: (
           <iframe
             width="90%"
@@ -174,7 +174,7 @@ const SafeZonePage = () => {
         onMouseLeave={() => setIsMapHovered(false)}
         onClick={handleDownloadPDF}
         style={{
-          backgroundImage: `url('mapimg.png')`,
+          backgroundImage: url('mapimg.png'),
           backgroundSize: "120%",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat"

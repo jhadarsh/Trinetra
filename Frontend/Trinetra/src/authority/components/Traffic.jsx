@@ -1,49 +1,112 @@
 import React, { useState } from "react";
+// Import your map image (convert PDF to PNG/JPEG as needed)
+import MahaKumbhMap from "/MahaKumbhMap.png"; // Update path if needed
 
-// Mock data for 8 routes: 4 Entries + 4 Ghats
-const routeData = [
-  { id: 1, name: "Entry Route 1", type: "Entry", density: "High", status: "Open" },
-  { id: 2, name: "Entry Route 2", type: "Entry", density: "Medium", status: "Open" },
-  { id: 3, name: "Entry Route 3", type: "Entry", density: "Low", status: "Open" },
-  { id: 4, name: "Entry Route 4", type: "Entry", density: "Critical", status: "Open" },
-  { id: 5, name: "Ghat Route 1", type: "Ghat", density: "Medium", status: "Open" },
-  { id: 6, name: "Ghat Route 2", type: "Ghat", density: "High", status: "Open" },
-  { id: 7, name: "Ghat Route 3", type: "Ghat", density: "Low", status: "Open" },
-  { id: 8, name: "Ghat Route 4", type: "Ghat", density: "Medium", status: "Open" },
+// Sample coordinates for overlay (update as needed for real locations)
+const routePositions = [
+  { id: 1, x: 40, y: 85 }, // Entry Route 1
+  { id: 2, x: 75, y: 78 }, // Entry Route 2
+  { id: 3, x: 60, y: 65 }, // Entry Route 3
+  { id: 4, x: 25, y: 75 }, // Entry Route 4
+  { id: 5, x: 60, y: 50 }, // Ghat Route 1
+  { id: 6, x: 70, y: 40 }, // Ghat Route 2
+  { id: 7, x: 30, y: 50 }, // Ghat Route 3
+  { id: 8, x: 47, y: 38 }, // Ghat Route 4
 ];
 
-// Utility for coloring density and status
+// Business logic data stays same
+const routeData = [
+  {
+    id: 1,
+    name: "Entry Route 1",
+    type: "Entry",
+    density: "High",
+    status: "Open",
+  },
+  {
+    id: 2,
+    name: "Entry Route 2",
+    type: "Entry",
+    density: "Medium",
+    status: "Open",
+  },
+  {
+    id: 3,
+    name: "Ghat Route 5",
+    type: "Entry",
+    density: "Low",
+    status: "Open",
+  },
+  {
+    id: 4,
+    name: "Entry Route 4",
+    type: "Entry",
+    density: "Critical",
+    status: "Open",
+  },
+  {
+    id: 5,
+    name: "Ghat Route 1",
+    type: "Ghat",
+    density: "Medium",
+    status: "Open",
+  },
+  {
+    id: 6,
+    name: "Ghat Route 2",
+    type: "Ghat",
+    density: "High",
+    status: "Open",
+  },
+  {
+    id: 7,
+    name: "Entry Route 3",
+    type: "Entry",
+    density: "Low",
+    status: "Open",
+  },
+  {
+    id: 8,
+    name: "Route 4",
+    type: "Entry",
+    density: "Medium",
+    status: "Open",
+  },
+];
+
 const densityColors = {
-  Low: "#2ecc71",
-  Medium: "#f1c40f",
+  Low: "#1abc9c",
+  Medium: "#f7ca18",
   High: "#e67e22",
   Critical: "#e74c3c",
 };
-
 const statusColors = {
-  Open: "#3498db",
+  Open: "#27ae60",
   Stopped: "#e74c3c",
 };
 
-const MahakumbhRouteFlowManager = () => {
+function MahakumbhRouteFlowManager() {
   const [routes, setRoutes] = useState(routeData);
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [announcement, setAnnouncement] = useState("");
   const [message, setMessage] = useState(null);
+  const [suggestion, setSuggestion] = useState(false);
+  const [count, setCount] = useState(0);
 
-  // Handle route click to open drawer
   const onRouteClick = (route) => {
     setSelectedRoute(route);
-    setAnnouncement("");
     setMessage(null);
+    setAnnouncement("");
   };
 
-  // Handle stop route button
+  const handleSuggestion = () => {
+    setSuggestion(!suggestion);
+    setCount(count + 1);
+  };
+
   const onStopRoute = () => {
     if (!selectedRoute) return;
-    // Confirmation prompt
     if (window.confirm(`Are you sure to STOP route "${selectedRoute.name}"?`)) {
-      // Update route status mock
       const updatedRoutes = routes.map((r) =>
         r.id === selectedRoute.id ? { ...r, status: "Stopped" } : r
       );
@@ -53,624 +116,651 @@ const MahakumbhRouteFlowManager = () => {
     }
   };
 
-  // Handle announcement sending (mock)
   const onSendAnnouncement = () => {
     if (!announcement.trim()) {
       setMessage("Please enter an announcement before sending.");
       return;
     }
-    setMessage(`Announcement sent for "${selectedRoute.name}": "${announcement.trim()}"`);
+    setMessage(
+      `Announcement sent for "${selectedRoute.name}": "${announcement.trim()}"`
+    );
     setAnnouncement("");
   };
 
-  // Format current date time for header display (mock live)
   const getCurrentFormattedTime = () => {
     return new Date().toLocaleString();
   };
 
+  // Utility to get position by route id
+  const getPosition = (id) => routePositions.find((route) => route.id === id);
+
   return (
-    <>
-      <style>{`
-        /* Basic Reset & Font */
-        * {
-          box-sizing: border-box;
-        }
-        body, html, #root {
-          height: 100%;
-          margin: 0;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          background: #101820FF;
-          color: #FEE715FF;
-          user-select: none;
-        }
+    <div className="mkfm-app-container">
+      <header className="mkfm-header">
+        <h1>Mahakumbh Route Flow Manager</h1>
+        <div className="mkfm-header-time">{getCurrentFormattedTime()}</div>
+      </header>
 
-        .app-container {
-          display: flex;
-          flex-direction: column;
-          height: 100vh;
-        }
+      <main className="mkfm-main">
+        <section
+          className="mkfm-map-panel"
+          aria-label="Map overlay with live route status"
+        >
+          <img
+            src={MahaKumbhMap}
+            alt="MahaKumbh Map"
+            className="mkfm-map-image"
+            loading="lazy"
+          />
+          {routes.map((route) => {
+            const pos = getPosition(route.id);
+            if (!pos) return null;
+            return (
+              <button
+                key={route.id}
+                className={`mkfm-route-marker ${
+                  route.status === "Stopped" ? "stopped" : ""
+                }`}
+                style={{
+                  left: `${pos.x}%`,
+                  top: `${pos.y}%`,
+                  background: densityColors[route.density],
+                  borderColor: statusColors[route.status],
+                  color: "#131d2b",
+                }}
+                title={`${route.name}\nDensity: ${route.density}\nStatus: ${route.status}`}
+                onClick={() =>
+                  route.status !== "Stopped" && onRouteClick(route)
+                }
+                aria-label={`Manage ${route.name}`}
+                disabled={route.status === "Stopped"}
+              >
+                <span
+                  className="mkfm-marker-dot"
+                  style={{ background: statusColors[route.status] }}
+                />
+                <span className="mkfm-marker-tooltip">
+                  <strong>{route.name}</strong>
+                  <br />
+                  Density: {route.density}
+                  <br />
+                  Status: {route.status}
+                </span>
+              </button>
+            );
+          })}
+        </section>
 
-        /* Header styles */
-        
-        header h1 {
-          font-weight: 700;
-          font-size: 1.8rem;
-          letter-spacing: 1px;
-        }
-        .header-right {
-          color: #FEE715FF;
-          font-weight: 500;
-          font-size: 0.9rem;
-          letter-spacing: 0.05em;
-          font-family: monospace;
-        }
-
-        /* Main content layout */
-        main {
-          flex-grow: 1;
-          display: flex;
-          overflow: hidden;
-          background: #161616;
-        }
-
-        /* Left panel: Route Map */
-        .map-panel {
-          flex: 2.5;
-          background: #222;
-          padding: 2rem;
-          position: relative;
-          box-shadow: inset 0 0 20px 3px #333;
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-around;
-          align-content: flex-start;
-          gap: 1rem;
-          border-right: 3px solid #FEE715FF;
-        }
-
-        /* Iconic route card on map */
-        .route-node {
-          cursor: pointer;
-          width: 13rem;
-          height: 13rem;
-          background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
-          border-radius: 1rem;
-          box-shadow:
-            4px 4px 8px #0a0a0a,
-            -4px -4px 8px #232323;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          user-select: none;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-          border: 3px solid transparent;
-          position: relative;
-        }
-        .route-node:hover {
-          transform: scale(1.08);
-          box-shadow:
-            0 0 15px #FEE715FF, 0 0 30px #FEE715AA inset;
-          border: 3px solid #FEE715FF;
-          z-index: 10;
-        }
-
-        .route-node.stopped {
-          filter: grayscale(70%);
-          box-shadow: 0 0 20px red inset !important;
-          border-color: #e74c3c !important;
-          cursor: default;
-        }
-
-        .route-type {
-          font-weight: 600;
-          font-size: 1rem;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          color: #ccc;
-        }
-        .route-name {
-          font-weight: 700;
-          font-size: 1.3rem;
-          margin-top: 0.3rem;
-          color: #FEE715FF;
-        }
-
-        .density-indicator {
-          margin-top: 0.8rem;
-          padding: 7px 15px;
-          border-radius: 20px;
-          font-weight: 700;
-          font-size: 1rem;
-          box-shadow: 0 0 12px 2px;
-          color: #161616;
-        }
-
-        /* Small badge on top right for status */
-        .status-badge {
-          position: absolute;
-          top: 8px;
-          right: 12px;
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          background: #3498db;
-          box-shadow: 0 0 8px #3498db;
-          border: 2px solid #222;
-        }
-        .status-badge.stopped {
-          background: #e74c3c;
-          box-shadow: 0 0 8px #e74c3c;
-        }
-
-        /* Right panel: Route List */
-        .list-panel {
-          flex: 1.5;
-          background: #1a1a1a;
-          padding: 2rem 1.5rem;
-          overflow-y: auto;
-          border-left: 3px solid #FEE715FF;
-          display: flex;
-          flex-direction: column;
-        }
-        .list-header {
-          font-weight: 700;
-          font-size: 1.4rem;
-          color: #FEE715FF;
-          margin-bottom: 1rem;
-          letter-spacing: 0.1em;
-          user-select: none;
-          border-bottom: 1px solid #333;
-          padding-bottom: 0.6rem;
-        }
-
-        .route-list-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          background: #222;
-          margin-bottom: 0.8rem;
-          padding: 0.8rem 1rem;
-          border-radius: 0.6rem;
-          box-shadow:
-            inset 0 0 10px #000,
-            3px 3px 6px #111;
-          cursor: pointer;
-          transition: background-color 0.25s ease;
-          user-select: none;
-        }
-        .route-list-item:hover {
-          background: #333;
-        }
-        .route-list-item.stopped {
-          background: #441111;
-          color: #e74c3c;
-          cursor: default;
-          font-weight: 700;
-        }
-
-        .list-route-name {
-          font-weight: 600;
-          font-size: 1.0rem;
-          flex: 1.7;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .list-density {
-          flex: 0.8;
-          font-weight: 700;
-          text-align: center;
-          color: #161616;
-          background-color: var(--density-bg);
-          border-radius: 15px;
-          padding: 3px 10px;
-          box-shadow: 0 0 8px 1px var(--density-shadow);
-        }
-
-        .list-status {
-          flex: 0.7;
-          font-weight: 700;
-          text-align: center;
-          color: var(--status-color);
-          text-transform: uppercase;
-        }
-
-        .btn-action {
-          flex: 0.9;
-          background: #FEE715FF;
-          border: none;
-          border-radius: 20px;
-          color: #161616;
-          cursor: pointer;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-          padding: 6px 10px;
-          transition: background-color 0.3s ease;
-          user-select: none;
-        }
-        .btn-action:disabled {
-          background: #999;
-          cursor: not-allowed;
-        }
-        .btn-action:hover:not(:disabled) {
-          background-color: #f7ea2b;
-        }
-
-        /* Drawer for route actions */
-        .drawer {
-          position: fixed;
-          top: 0;
-          right: 0;
-          height: 100vh;
-          width: 420px;
-          max-width: 95vw;
-          background: linear-gradient(180deg,#111111 0%,#222222 100%);
-          box-shadow: -5px 0 15px rgba(0,0,0,0.9);
-          border-left: 3px solid #FEE715FF;
-          padding: 2.5rem 2rem;
-          transform: translateX(100%);
-          transition: transform 0.4s ease;
-          display: flex;
-          flex-direction: column;
-          z-index: 1000;
-          overflow-y: auto;
-        }
-        .drawer.open {
-          transform: translateX(0);
-        }
-        .drawer-header {
-          font-weight: 800;
-          font-size: 1.5rem;
-          color: #FEE715FF;
-          margin-bottom: 1rem;
-          border-bottom: 1px solid #333;
-          padding-bottom: 0.8rem;
-          user-select: none;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .close-drawer {
-          cursor: pointer;
-          font-weight: 700;
-          font-size: 1.4rem;
-          color: #e74c3c;
-          user-select: none;
-          transition: color 0.3s ease;
-        }
-        .close-drawer:hover {
-          color: #f00;
-        }
-
-        .drawer-content {
-          flex-grow: 1;
-          margin-top: 1rem;
-          display: flex;
-          flex-direction: column;
-        }
-        .drawer-section {
-          margin-bottom: 1.8rem;
-        }
-
-        /* Density & Status in drawer */
-        .drawer-info {
-          font-size: 1.2rem;
-          font-weight: 600;
-          margin-bottom: 0.8rem;
-          color: #FEE715FF;
-          letter-spacing: 0.05em;
-          display: flex;
-          justify-content: space-between;
-          padding: 0 1rem;
-        }
-
-        /* Announcement input */
-        textarea {
-          width: 100%;
-          height: 90px;
-          padding: 12px 15px;
-          border-radius: 10px;
-          border: 2px solid #444;
-          resize: none;
-          background: #222;
-          color: #FEE715FF;
-          font-size: 1rem;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          box-shadow:
-            inset 2px 2px 8px #000,
-            0 0 6px #FEE71555;
-          transition: border-color 0.3s ease;
-        }
-        textarea:focus {
-          border-color: #FEE715FF;
-          outline: none;
-        }
-
-        /* Buttons in drawer */
-        .drawer-btns {
-          display: flex;
-          justify-content: space-between;
-          gap: 1rem;
-        }
-        .btn-announcement {
-          flex: 1;
-          background-color: #FEE715FF;
-          border: none;
-          border-radius: 25px;
-          padding: 12px 0;
-          font-weight: 700;
-          color: #161616;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-          user-select: none;
-          letter-spacing: 0.05em;
-        }
-        .btn-announcement:hover {
-          background-color: #f7ea2b;
-        }
-        .btn-stop {
-          flex: 1;
-          background-color: #e74c3c;
-          border: none;
-          border-radius: 25px;
-          padding: 12px 0;
-          font-weight: 700;
-          color: white;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-          user-select: none;
-          letter-spacing: 0.05em;
-        }
-        .btn-stop:hover {
-          background-color: #cf3a36;
-        }
-
-        /* Message (success/info) box */
-        .message-box {
-          background-color: #333;
-          color: #FEE715FF;
-          font-weight: 600;
-          padding: 12px 16px;
-          border-radius: 12px;
-          text-align: center;
-          box-shadow: 0 0 12px 3px #FEE715AA;
-          margin-top: 1rem;
-          font-size: 1rem;
-          user-select: none;
-          letter-spacing: 0.03em;
-        }
-
-        /* Footer */
-        footer {
-          background: #121212;
-          padding: 12px 2rem;
-          color: #aaa;
-          font-size: 0.8rem;
-          text-align: center;
-          user-select: none;
-          border-top: 1px solid #222;
-          letter-spacing: 0.05em;
-        }
-
-        /* Scrollbar styling for right panel and drawer */
-        .list-panel::-webkit-scrollbar, .drawer::-webkit-scrollbar {
-          width: 8px;
-        }
-        .list-panel::-webkit-scrollbar-thumb, .drawer::-webkit-scrollbar-thumb {
-          background-color: #555;
-          border-radius: 4px;
-        }
-      `}</style>
-
-      <div className="app-container">
-        <header>
-          <h1>Mahakumbh Route Flow Manager</h1>
-          <div className="header-right" title="Current system time">
-            {getCurrentFormattedTime()}
+        <section className="mkfm-list-panel" aria-label="Live route list">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "12px",
+            }}
+          >
+            <h2 className="mkfm-list-header">Route Summary</h2>
+            <button className="suggestion-button" onClick={handleSuggestion}>
+              Suggestions
+            </button>
           </div>
-        </header>
-
-        <main>
-          {/* Left Panel - Map Layout */}
-          <section className="map-panel" aria-label="Map with routes status and selection">
-            {routes.map((route) => (
+          {suggestion ? count < 2 ? (
+            <div
+            className="blinking-warning"
+            role="alert"
+            style={{
+              backgroundColor: 'red', // A bright red for high alert
+              color: 'white',
+              borderRadius: '16px',
+              padding: '24px',
+              fontWeight: 'bold',
+              boxShadow: '0 0 20px rgba(255, 60, 60, 0.7)',
+              fontFamily: 'Inter, sans-serif'
+            }}
+          >
+            The crowd density is exceeding at <b>Entry Route 4</b>. It's suggested to close it and redirect the crowd to <b>Entry Route 3</b>.
+          </div>
+          ): (
+<div style={{marginTop:16, border:"2px dotted white", padding:"15px 20px",alignItems:"center",borderRadius:16}}>Everything is running smoothly! Our AI system is continuously monitoring all routes to ensure the best and safest experience for everyone.</div>
+          ) : (
+            routes.map((route) => (
               <div
                 key={route.id}
-                className={`route-node ${route.status === "Stopped" ? "stopped" : ""}`}
-                onClick={() => route.status !== "Stopped" && onRouteClick(route)}
-                title={`${route.name} - Density: ${route.density} - Status: ${route.status}`}
+                className={`mkfm-list-item ${
+                  route.status === "Stopped" ? "stopped" : ""
+                }`}
+                onClick={() =>
+                  route.status !== "Stopped" && onRouteClick(route)
+                }
+                title={`${route.name}, Density: ${route.density}, Status: ${route.status}`}
                 role="button"
                 tabIndex={route.status === "Stopped" ? -1 : 0}
                 aria-pressed={selectedRoute?.id === route.id}
-                onKeyDown={(e) => {
-                  if ((e.key === "Enter" || e.key === " ") && route.status !== "Stopped") {
-                    onRouteClick(route);
-                  }
+                style={{
+                  borderLeft: `5px solid ${densityColors[route.density]}`,
                 }}
               >
-                <div className="route-type">{route.type}</div>
-                <div className="route-name">{route.name}</div>
-                <div
-                  className="density-indicator"
+                <span>{route.name}</span>
+                <span
+                  className="mkfm-list-density"
                   style={{
-                    backgroundColor: densityColors[route.density],
-                    boxShadow: `0 0 10px 3px ${densityColors[route.density]}77`,
+                    color: densityColors[route.density],
+                    fontWeight: "700",
                   }}
-                  aria-label={`Density level: ${route.density}`}
                 >
                   {route.density}
-                </div>
+                </span>
                 <span
-                  className={`status-badge ${route.status === "Stopped" ? "stopped" : ""}`}
-                  aria-label={`Route status: ${route.status}`}
-                />
-              </div>
-            ))}
-          </section>
-
-          {/* Right Panel - Route List */}
-          <section className="list-panel" aria-label="Route summary and quick actions">
-            <h2 className="list-header">Route Summary</h2>
-            {routes.map((route) => (
-              <div
-                key={route.id}
-                className={`route-list-item ${route.status === "Stopped" ? "stopped" : ""}`}
-                onClick={() => route.status !== "Stopped" && onRouteClick(route)}
-                role="button"
-                tabIndex={route.status === "Stopped" ? -1 : 0}
-                aria-pressed={selectedRoute?.id === route.id}
-                title={`${route.name}, Density: ${route.density}, Status: ${route.status}`}
-                onKeyDown={(e) => {
-                  if ((e.key === "Enter" || e.key === " ") && route.status !== "Stopped") {
-                    onRouteClick(route);
-                  }
-                }}
-                style={{
-                  "--density-bg": densityColors[route.density],
-                  "--density-shadow": densityColors[route.density],
-                  "--status-color": route.status === "Stopped" ? "#e74c3c" : "#3498db",
-                }}
-              >
-                <div className="list-route-name">{route.name}</div>
-                <div className="list-density" aria-label={`Density: ${route.density}`}>
-                  {route.density}
-                </div>
-                <div className="list-status" aria-label={`Status: ${route.status}`}>
+                  className="mkfm-list-status"
+                  style={{
+                    color: statusColors[route.status],
+                    fontWeight: "700",
+                    textTransform: "uppercase",
+                  }}
+                >
                   {route.status}
-                </div>
+                </span>
                 <button
-                  className="btn-action"
+                  className="mkfm-list-btn"
                   disabled={route.status === "Stopped"}
                   onClick={(e) => {
                     e.stopPropagation();
                     onRouteClick(route);
                   }}
-                  aria-label={`Manage ${route.name}`}
                 >
                   Manage
                 </button>
               </div>
-            ))}
-          </section>
-        </main>
+            ))
+          )}
+        </section>
+      </main>
 
-        {/* Drawer Panel */}
-        {selectedRoute && (
-  <div
-    className="drawer-overlay"
-    onClick={() => setSelectedRoute(null)}
-    aria-hidden={false}
-  >
-    <aside
-      className="drawer open"
-      role="region"
-      aria-label="Route management details"
-      onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside drawer
-    >
-      <div className="drawer-header">
-        <span>{selectedRoute.name}</span>
-        <span
-          className="close-drawer"
-          role="button"
-          tabIndex={0}
-          aria-label="Close drawer"
+      {selectedRoute && (
+        <div
+          className="mkfm-drawer-overlay"
           onClick={() => setSelectedRoute(null)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") setSelectedRoute(null);
-          }}
+          aria-hidden={false}
         >
-          &times;
-        </span>
-      </div>
-
-      <div className="drawer-content">
-        <div className="drawer-info">
-          <span>
-            Density:{" "}
-            <strong style={{ color: densityColors[selectedRoute.density] }}>
-              {selectedRoute.density}
-            </strong>
-          </span>
-          <span>
-            Status:{" "}
-            <strong style={{ color: statusColors[selectedRoute.status] }}>
-              {selectedRoute.status}
-            </strong>
-          </span>
-        </div>
-
-        <div className="drawer-section">
-          <label
-            htmlFor="announcement"
-            style={{
-              color: "#FEE715FF",
-              fontWeight: "600",
-              marginBottom: "0.4rem",
-              display: "block",
-            }}
+          <aside
+            className="mkfm-drawer open"
+            role="region"
+            aria-label="Route management details"
+            onClick={(e) => e.stopPropagation()}
           >
-            Enter Announcement
-          </label>
-          <textarea
-            id="announcement"
-            placeholder="Type your announcement or instructions here..."
-            value={announcement}
-            onChange={(e) => setAnnouncement(e.target.value)}
-            spellCheck={false}
-            aria-multiline="true"
-            disabled={selectedRoute.status === "Stopped"}
-          />
+            <div className="mkfm-drawer-header">
+              <span>{selectedRoute.name}</span>
+              <span
+                className="mkfm-close-drawer"
+                role="button"
+                tabIndex={0}
+                aria-label="Close drawer"
+                onClick={() => setSelectedRoute(null)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ")
+                    setSelectedRoute(null);
+                }}
+              >
+                &times;
+              </span>
+            </div>
+            <div className="mkfm-drawer-content">
+              <div className="mkfm-drawer-info">
+                <span>
+                  Density:{" "}
+                  <strong
+                    style={{ color: densityColors[selectedRoute.density] }}
+                  >
+                    {selectedRoute.density}
+                  </strong>
+                </span>
+                <span>
+                  Status:{" "}
+                  <strong style={{ color: statusColors[selectedRoute.status] }}>
+                    {selectedRoute.status}
+                  </strong>
+                </span>
+              </div>
+
+              <div className="mkfm-drawer-section">
+                <label
+                  htmlFor="announcement"
+                  className="mkfm-announcement-label"
+                >
+                  Enter Announcement
+                </label>
+                <textarea
+                  id="announcement"
+                  placeholder="Type your announcement or instructions here..."
+                  value={announcement}
+                  onChange={(e) => setAnnouncement(e.target.value)}
+                  spellCheck={false}
+                  aria-multiline="true"
+                  disabled={selectedRoute.status === "Stopped"}
+                  className="mkfm-textarea"
+                />
+              </div>
+
+              <div className="mkfm-drawer-btns">
+                <button
+                  className="mkfm-btn-announcement"
+                  onClick={onSendAnnouncement}
+                  disabled={selectedRoute.status === "Stopped"}
+                  aria-label="Send announcement"
+                >
+                  Send Announcement
+                </button>
+                <button
+                  className="mkfm-btn-stop"
+                  onClick={onStopRoute}
+                  disabled={selectedRoute.status === "Stopped"}
+                  aria-label="Stop this route"
+                >
+                  Stop Route
+                </button>
+              </div>
+              {message && (
+                <div className="mkfm-message-box" role="alert">
+                  {message}
+                </div>
+              )}
+            </div>
+          </aside>
         </div>
+      )}
 
-        <div className="drawer-btns">
-          <button
-            className="btn-announcement"
-            onClick={onSendAnnouncement}
-            disabled={selectedRoute.status === "Stopped"}
-            aria-label="Send announcement"
-          >
-            Send Announcement
-          </button>
-          <button
-            className="btn-stop"
-            onClick={onStopRoute}
-            disabled={selectedRoute.status === "Stopped"}
-            aria-label="Stop this route"
-          >
-            Stop Route
-          </button>
-        </div>
+      <footer className="mkfm-footer">
+        Powered by RouteFlow | MahaKumbh 2025
+      </footer>
 
-        {message && (
-          <div className="message-box" role="alert">
-            {message}
-          </div>
-        )}
-      </div>
-    </aside>
-    <style>{`
-      /* Overlay that sits behind the drawer */
-      .drawer-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(0,0,0,0.6);
-        z-index: 999;
-        display: flex;
-        justify-content: flex-end;
-        user-select: none;
-      }
-    `}</style>
-  </div>
-)}
+      {/* Modern styles */}
+      <style>{`
+        .mkfm-app-container {
+          background: #131d2b;
+          min-height: 100vh;
+          color: #fff;
+          font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+          display: flex;
+          flex-direction: column;
+        }
+        .mkfm-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.4rem 2.4rem 1.2rem 2.4rem;
+          background: #151a21;
+          border-bottom: 2px solid #2e4767;
+        }
+        .mkfm-header h1 {
+          font-size: 1.38rem;
+          letter-spacing: 0.07em;
+          font-weight: 700;
+          color: #fee715;
+        }
+        .suggestion-button {
+  background-color: #e74c3c; /* A nice red */
+  color: #fff; /* White text */
+  border-radius: 50px; /* Fully rounded corners */
+  padding: 10px 30px; /* Add some horizontal padding */
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
-      </div>
-    </>
+.suggestion-button:hover {
+  background-color: #c0392b; /* Darker red on hover */
+}
+        .mkfm-header-time {
+          color: #fee715;
+          font-weight: 600;
+          font-size: 1rem;
+          letter-spacing: 0.03em;
+          font-family: monospace;
+        }
+        .mkfm-main {
+          display: flex;
+          flex: 1;
+          min-height: 0;
+        }
+        .mkfm-map-panel {
+          flex: 2.5;
+          position: relative;
+          background: #131d2b;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-right: 2px solid #fee715;
+          min-height: 68vh;
+        }
+        .mkfm-map-image {
+          width: 97%;
+          max-width: 1000px;
+          height: auto;
+          border-radius: 1.4rem;
+          box-shadow: 0 0 32px #193c68bf;
+          margin: auto;
+          display: block;
+        }
+        .mkfm-route-spot {
+          position: absolute;
+          min-width: 110px;
+          max-width: 210px;
+          min-height: 46px;
+          padding: 8px 14px;
+          border-radius: 1.2rem;
+          border: 3px solid #27ae60;
+          box-shadow: 0 0 14px #2f5da7cc;
+          font-weight: 700;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          transition: transform 0.22s cubic-bezier(.8,.2,.7,1), box-shadow 0.18s;
+          z-index: 15;
+          font-size: 1rem;
+          backdrop-filter: blur(1.2px);
+          pointer-events: auto;
+        }
+        .mkfm-route-spot.stopped {
+          opacity: 0.63;
+          filter: grayscale(65%);
+          border-color: #e74c3c !important;
+          box-shadow: 0 0 16px #e74c3cab;
+          cursor: not-allowed;
+        }
+        .mkfm-route-spot:hover {
+          box-shadow: 0 0 44px #fee715b1;
+          transform: scale(1.08);
+          border-color: #fee715;
+          z-index: 500;
+        }
+        .mkfm-badge-icon {
+          font-size: 1.12rem;
+          margin-bottom: 2px;
+        }
+        .mkfm-badge-name {
+          font-weight: 700;
+          color: #131d2b;
+          font-size: 1.03rem;
+          letter-spacing: 0.06em;
+        }
+        .mkfm-badge-density {
+          font-size: 0.92rem;
+          font-weight: 700;
+          color: #fff;
+          margin-top: 1px;
+        }
+        .mkfm-status-dot {
+          display: inline-block;
+          margin-top: 5px;
+          margin-right: 3px;
+          border-radius: 50%;
+          width: 14px;
+          height: 14px;
+          box-shadow: 0 0 8px #1116;
+          vertical-align: middle;
+        }
+        .mkfm-status-dot.stopped {
+          box-shadow: 0 0 11px #e74c3c;
+        }
+        .mkfm-list-panel {
+          flex: 1.3;
+          background: #161f29;
+          padding: 2.2rem 1.3rem;
+          display: flex;
+          flex-direction: column;
+          overflow-y: auto;
+          border-left: 2px solid #fee715;
+        }
+        .mkfm-list-header {
+          font-weight: 700;
+          font-size: 1.25rem;
+          color: #fee715;
+          letter-spacing: 0.09em;
+          margin-bottom: 1.25rem;
+        }
+        .mkfm-list-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: #19263d;
+          color: #fff;
+          padding: 1rem 1.4rem;
+          margin-bottom: 0.9rem;
+          border-radius: 0.83rem;
+          box-shadow: 0 0 14px #121a2b55;
+          cursor: pointer;
+          transition: background 0.21s;
+          font-size: 1rem;
+        }
+        .mkfm-list-item.stopped {
+          background: #541a1a;
+          color: #e74c3c;
+          cursor: not-allowed;
+          border-left: 5px solid #e74c3c !important;
+        }
+        .mkfm-list-btn {
+          margin-left: 10px;
+          padding: 5px 12px;
+          font-weight: 700;
+          color: #193c68;
+          background: #fee715;
+          border-radius: 14px;
+          border: none;
+          cursor: pointer;
+          transition: background 0.18s;
+        }
+        .mkfm-list-btn:disabled {
+          background: #bbb;
+          color: #888;
+          cursor: not-allowed;
+        }
+        .mkfm-list-btn:hover:not(:disabled) {
+          background: #fff54a;
+        }
+        /* Drawer Styles */
+        .mkfm-drawer-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background-color: rgba(10,19,30,0.66);
+          z-index: 999;
+          display: flex;
+          justify-content: flex-end;
+        }
+        .mkfm-drawer {
+          width: 420px;
+          max-width: 99vw;
+          min-height: 100vh;
+          background: linear-gradient(180deg,#19263d 0%,#1b2031 100%);
+          box-shadow: -7px 0 22px rgba(0,0,0,0.95);
+          border-left: 3px solid #fee715;
+          padding: 2.3rem 1.7rem 1.7rem 1.8rem;
+          display: flex;
+          flex-direction: column;
+          z-index: 1001;
+          overflow-y: auto;
+        }
+        .mkfm-drawer-header {
+          font-weight: 800;
+          font-size: 1.15rem;
+          color: #fee715;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 1.23rem;
+        }
+        .mkfm-close-drawer {
+          font-weight: 700;
+          font-size: 1.4rem;
+          color: #e74c3c;
+          cursor: pointer;
+          user-select: none;
+          transition: color 0.23s;
+        }
+        .mkfm-close-drawer:hover {
+          color: #ff1b1b;
+        }
+        .mkfm-drawer-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 1.3rem;
+        }
+        .mkfm-drawer-info {
+          font-size: 1.09rem;
+          font-weight: 600;
+          color: #fee715;
+          display: flex;
+          justify-content: space-between;
+          gap: 2.2rem;
+          align-items: center;
+          background: #19263d;
+          border-radius: 8px;
+          padding: 9px 16px;
+          margin-bottom: 0.7rem;
+        }
+        .mkfm-announcement-label {
+          color: #fee715;
+          font-weight: 600;
+          display: block;
+          margin-bottom: 6px;
+        }
+        .mkfm-textarea {
+          width: 100%;
+          min-height: 80px;
+          border-radius: 8px;
+          padding: 12px;
+          font-size: 1rem;
+          background: #232e43;
+          color: #fff;
+          border: 2px solid #313d59;
+          transition: border-color 0.18s;
+          margin-bottom: 1.4rem;
+          box-shadow: 0 0 10px #19263d44 inset;
+        }
+        .mkfm-textarea:focus {
+          border-color: #fee715;
+          outline: none;
+        }
+        .mkfm-drawer-btns {
+          display: flex;
+          gap: 1.1rem;
+        }
+        .mkfm-btn-announcement,
+        .mkfm-btn-stop {
+          flex: 1;
+          padding: 10px 0px;
+          border-radius: 24px;
+          font-weight: 700;
+          font-size: 1rem;
+          letter-spacing: 0.04em;
+          cursor: pointer;
+          border: none;
+          transition: background 0.23s;
+        }
+        .mkfm-btn-announcement {
+          background: #fee715;
+          color: #18437b;
+        }
+        .mkfm-btn-announcement:hover {
+          background: #fff54a;
+        }
+        .mkfm-btn-stop {
+          background: #e74c3c;
+          color: #fff;
+        }
+        .mkfm-btn-stop:hover {
+          background: #e02121;
+        }
+        .mkfm-message-box {
+          background: #313d55;
+          color: #fee715;
+          font-weight: 600;
+          padding: 13px 19px;
+          border-radius: 12px;
+          text-align: center;
+          font-size: 1rem;
+          margin-top: 1.1rem;
+          box-shadow: 0 0 7px #fee71599;
+        }
+        .mkfm-route-marker {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid #27ae60;
+  box-shadow: 0 2px 10px #2226;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: border 0.18s, box-shadow 0.26s, transform 0.18s;
+  outline: none;
+  padding: 0;
+  background: #fff;
+}
+
+.mkfm-route-marker.stopped {
+  opacity: 0.66;
+  filter: grayscale(80%);
+  border-color: #e74c3c !important;
+  cursor: not-allowed;
+}
+
+.mkfm-route-marker:hover, .mkfm-route-marker:focus {
+  box-shadow: 0 0 16px #fee715b1, 0 0 2px #fee715 inset;
+  transform: scale(1.18);
+  z-index: 101;
+}
+
+.mkfm-marker-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  box-shadow: 0 0 5px #1118;
+  border: 2px solid #fff;
+}
+
+.mkfm-marker-tooltip {
+  display: none;
+  position: absolute;
+  left: 34px;
+  top: -6px;
+  min-width: 140px;
+  background: #19263d;
+  color: #fee715;
+  font-size: 0.92rem;
+  padding: 11px 14px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px #101c28c0;
+  pointer-events: none;
+  white-space: pre-line;
+}
+.mkfm-route-marker:hover .mkfm-marker-tooltip,
+.mkfm-route-marker:focus .mkfm-marker-tooltip {
+  display: block;
+}
+
+        .mkfm-footer {
+          background: #161f29;
+          padding: 12px 2.3rem;
+          color: #aaa;
+          font-size: 0.91rem;
+          text-align: center;
+          letter-spacing: 0.06em;
+          border-top: 1px solid #222;
+        }
+        ::-webkit-scrollbar { width: 9px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: #24314dab; border-radius: 4px; }
+      `}</style>
+    </div>
   );
-};
+}
 
 export default MahakumbhRouteFlowManager;
