@@ -56,10 +56,10 @@ const Popup = ({ ghat, isVisible, position, onClose }) => {
       const formData = new FormData();
       formData.append('image', imageFile);
 
-      console.log(`🚀 Calling API: http://localhost:5000/predict`);
+      console.log(`🚀 Calling API: http://localhost:3000/predict`);
 
       // Call your API with proper error handling
-      const response = await fetch('http://localhost:5000/predict', {
+      const response = await fetch('http://localhost:3000/predict', {
         method: 'POST',
         body: formData,
         // Remove Content-Type header - let browser set it for FormData

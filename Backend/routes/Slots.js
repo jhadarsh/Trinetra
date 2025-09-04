@@ -21,7 +21,7 @@ router.post("/book",async(req,res)=>{
         bookingDetails,
     });
 
-slotExists.booked = Number(slotExists.booked) + Number(bookingDetails.numberOfPeople);
+    slotExists.booked = Number(slotExists.booked) + Number(bookingDetails.numberOfPeople);
     await slotExists.save();
     await booking.save();
         res.status(201).json({

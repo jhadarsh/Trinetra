@@ -11,6 +11,7 @@ import KumbhMelaMonitor from "./Pages/HeatMap_Dashboard";
 import LostAndFoundPage from "./Pages/LostAndFoundPage";
 import SafeZonePage from "./Pages/SafeZonePage";
 import Dashboard from "./authority/dashboard";
+import Ticket from "./Pages/Ticket";
 
 
 function AppWrapper() {
@@ -34,6 +35,7 @@ function AppWrapper() {
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/lost-found" element={<LostAndFoundPage />} />
           <Route path="/ar-navigation" element={<SafeZonePage />} />
+          <Route path="/ticket" element={<Ticket />} />
         </Routes>
       </main>
       {!hideFooterPaths.includes(location.pathname) && <Footer id="footer"/>}

@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, Users, Ticket } from "lucide-react";
-import {Link} from "react-router-dom";
 import axios from "axios";
+import BookingForm from "../Pages/Book"; // import your form component
 
 export default function Booking() {
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedSlot, setSelectedSlot] = useState(null); // store clicked slot
+  const [isModalOpen, setIsModalOpen] = useState(false); // modal state
 
   // ✅ Fetch API data with axios
   useEffect(() => {
@@ -109,9 +111,12 @@ export default function Booking() {
                 </p>
 
                 {/* Book Now Button */}
-                <Link to="/book">
                 <button
                   disabled={isFull}
+                  onClick={() => {
+                    setSelectedSlot(slot._id); // store slot ID
+                    setIsModalOpen(true); // open modal
+                  }}
                   className={`mt-5 flex items-center gap-2 px-4 py-2 w-full justify-center rounded-xl font-medium text-white transition ${
                     isFull
                       ? "bg-gray-400 cursor-not-allowed"
@@ -121,13 +126,35 @@ export default function Booking() {
                   <Ticket className="w-5 h-5" />
                   {isFull ? "Fully Booked" : "Book Now"}
                 </button>
-                </Link>
               </motion.div>
             );
           })}
         </div>
       </div>
+
+      {/* Modal for Booking Form */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="relative w-[50%]  bg-white rounded-xl shadow-lg p-6">
+            {/* Close button */}
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-xl font-bold"
+            >
+              ✕
+            </button>
+
+            {/* Pass selected slotId to BookingForm */}
+            <BookingForm 
+              preselectedSlot={selectedSlot} 
+              onBookingSuccess={() => {
+                setIsModalOpen(false);   // close modal
+                window.location.reload(); // reload page to refresh slots
+              }} 
+            />          
+            </div>
+        </div>
+      )}
     </section>
   );
 }
- 
