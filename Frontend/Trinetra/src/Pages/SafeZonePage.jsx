@@ -111,6 +111,33 @@ const SafeZonePage = () => {
     ]
   };
 
+  const gateData = [
+    {
+      name: "Gate 1",
+      location: "East side",
+      traffic: "low",
+      googleMapsLink: "https://maps.app.goo.gl/abcdefg"
+    },
+    {
+      name: "Gate 2",
+      location: "North side",
+      traffic: "high",
+      googleMapsLink: "https://maps.app.goo.gl/hijklmn"
+    },
+    {
+      name: "Gate 3",
+      location: "West side",
+      traffic: "medium",
+      googleMapsLink: "https://maps.app.goo.gl/opqrstu"
+    },
+    {
+      name: "Gate 4",
+      location: "South side",
+      traffic: "low",
+      googleMapsLink: "https://maps.app.goo.gl/vwxyz12"
+    }
+  ];
+
   // Default tab and tour
   const [activeTab, setActiveTab] = useState("2 Ghats");
   const [activeTour, setActiveTour] = useState(
@@ -118,6 +145,9 @@ const SafeZonePage = () => {
   ); // Ram Ghat as default
 
   const [isMapHovered, setIsMapHovered] = useState(false);
+  const [userLocation, setUserLocation] = useState("");
+  const [bestGate, setBestGate] = useState(null);
+  const [showGates, setShowGates] = useState(false);
 
   const handleDownloadPDF = () => {
     const link = document.createElement("a");
@@ -127,6 +157,24 @@ const SafeZonePage = () => {
     link.click();
     document.body.removeChild(link);
     console.log("Downloading PDF...");
+  };
+
+  const findBestGate = () => {
+    // Mock logic for finding the best gate
+    const lowTrafficGates = gateData.filter((gate) => gate.traffic === "low");
+    if (lowTrafficGates.length > 0) {
+      setBestGate(lowTrafficGates[0]);
+    } else {
+      const mediumTrafficGates = gateData.filter(
+        (gate) => gate.traffic === "medium"
+      );
+      if (mediumTrafficGates.length > 0) {
+        setBestGate(mediumTrafficGates[0]);
+      } else {
+        setBestGate(null); // All gates have high traffic
+      }
+    }
+    setShowGates(true);
   };
 
   return (
@@ -164,52 +212,145 @@ const SafeZonePage = () => {
         </div>
       </motion.header>
 
-      {/* Map Section */}
+      {/* Map and Gate Suggestions Section */}
       <motion.section
-        className="h-[50vh] relative mt-16 cursor-pointer overflow-hidden"
+        className="relative mt-16 p-4 md:p-8 flex flex-col md:flex-row items-start justify-center"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 0.3 }}
-        onMouseEnter={() => setIsMapHovered(true)}
-        onMouseLeave={() => setIsMapHovered(false)}
-        onClick={handleDownloadPDF}
-      style={{
-  backgroundImage: "url('mapimg.png')",
-  backgroundSize: "120%",
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat"
-}}
-
       >
-        <AnimatePresence>
-          {isMapHovered && (
-            <motion.div
-              className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-[1px]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            />
-          )}
-        </AnimatePresence>
-
+        {/* Map Section */}
         <motion.div
-          className="absolute bottom-6 right-6 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg font-medium"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.8 }}
-          whileHover={{ scale: 1.05 }}
+          className="w-full md:w-1/2 cursor-pointer overflow-hidden rounded-lg shadow-lg relative mb-8 md:mb-0"
+          style={{
+            height: "300px",
+            backgroundImage: "url('mapimg.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat"
+          }}
+          onMouseEnter={() => setIsMapHovered(true)}
+          onMouseLeave={() => setIsMapHovered(false)}
+          onClick={handleDownloadPDF}
         >
-          Click to download map PDF
+          <AnimatePresence>
+            {isMapHovered && (
+              <motion.div
+                className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-[1px]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              />
+            )}
+          </AnimatePresence>
+          <motion.div
+            className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg font-medium"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.8 }}
+            whileHover={{ scale: 1.05 }}
+          >
+            Click to download map PDF
+          </motion.div>
+          <motion.div
+            className="absolute top-4 left-4 bg-white bg-opacity-90 text-black px-4 py-2 rounded-lg font-bold text-lg"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            Interactive Zone Map
+          </motion.div>
         </motion.div>
 
+        {/* Gate Suggestions Section */}
         <motion.div
-          className="absolute top-6 left-6 bg-white bg-opacity-90 text-black px-6 py-3 rounded-lg font-bold text-lg"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.6 }}
+          className="w-full md:w-1/2 p-4 md:ml-8 bg-white bg-opacity-40 rounded-lg shadow-lg"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
         >
-          Interactive Zone Map
+          <h2 className="text-2xl font-bold mb-4 text-black text-center">
+            Find Your Best Entry Gate
+          </h2>
+          <div className="mb-4">
+            <label className="block text-black font-semibold mb-2">
+              Enter your current location:
+            </label>
+            <input
+              type="text"
+              value={userLocation}
+              onChange={(e) => setUserLocation(e.target.value)}
+              placeholder="e.g., New Delhi Railway Station"
+              className="w-full p-2 rounded-lg bg-white bg-opacity-60 text-black placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
+            />
+            <button
+              onClick={findBestGate}
+              className="mt-4 w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition-colors duration-200"
+            >
+              Get Best Gate
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {showGates && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                {bestGate && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="p-4 bg-white bg-opacity-70 rounded-lg border-2 border-green-500 mb-4"
+                  >
+                    <div className="flex items-center mb-2">
+                      <span className="text-green-600 font-bold text-lg">✅ Best Gate:</span>
+                      <span className="ml-2 text-xl font-bold text-green-600">{bestGate.name}</span>
+                    </div>
+                    <p className="text-gray-800">
+                      This gate has the lowest traffic right now, making it the best option for a quick entry.
+                    </p>
+                  </motion.div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {gateData.map((gate) => (
+                    <motion.div
+                      key={gate.name}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: 0.4 }}
+                      className="bg-white bg-opacity-50 p-4 rounded-lg shadow-md flex flex-col items-center text-center"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <h3 className="text-xl font-semibold mb-2">{gate.name}</h3>
+                      <p className={`font-bold uppercase ${
+                        gate.traffic === 'low' ? 'text-green-600' :
+                        gate.traffic === 'medium' ? 'text-yellow-600' :
+                        'text-red-600'
+                      }`}>
+                        Traffic: {gate.traffic}
+                      </p>
+                      <p className="text-sm text-gray-700 mb-2">{gate.location}</p>
+                      <a
+                        href={gate.googleMapsLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-black text-white text-sm px-4 py-2 rounded-full mt-auto hover:bg-gray-800 transition-colors duration-200"
+                      >
+                        View on Map
+                      </a>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </motion.section>
 
