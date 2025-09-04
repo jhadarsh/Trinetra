@@ -10,6 +10,7 @@ const PORT = process.env.PORT;
 const url = process.env.MONGO_URL;
 
 const SlotsRoutes = require("./routes/Slots");
+const Rekroute = require("./routes/recognition")
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 
 //Routes
 app.use("/api/slots",SlotsRoutes);
+app.use("/api/recognition", Rekroute);
 
 
 

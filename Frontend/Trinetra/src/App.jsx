@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import Home from "./Pages/Home";
@@ -8,25 +8,38 @@ import EventTimeline from "./Components/Home/EventTimeline";
 import Booking from "./Pages/Booking";
 import BookingForm from "./Pages/Book";
 import KumbhMelaMonitor from "./Pages/HeatMap_Dashboard";
+import Dashboard from './authority/dashboard'
+
+function AppWrapper() {
+  const location = useLocation();
+
+  // Check if current path is /dashboard
+  const hideFooterPaths = ["/admin"];
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/events" element={<EventTimeline />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/slots" element={<Booking />} />
+          <Route path="/book" element={<BookingForm />} />
+          <Route path="/dashboard" element={<KumbhMelaMonitor />} />
+          <Route path="/admin" element={<Dashboard />} />
+        </Routes>
+      </main>
+      {!hideFooterPaths.includes(location.pathname) && <Footer />}
+    </div>
+  );
+}
 
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/events" element={<EventTimeline/>} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/slots" element={<Booking />} />
-            <Route path="/book" element={<BookingForm />} />
-            <Route path="/dashboard" element={<KumbhMelaMonitor />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <AppWrapper />
     </Router>
   );
 }
