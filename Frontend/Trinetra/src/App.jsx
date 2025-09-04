@@ -10,33 +10,43 @@ import BookingForm from "./Pages/Book";
 import KumbhMelaMonitor from "./Pages/HeatMap_Dashboard";
 import LostAndFoundPage from "./Pages/LostAndFoundPage";
 import SafeZonePage from "./Pages/SafeZonePage";
+import Dashboard from "./authority/dashboard";
+
+
+function AppWrapper() {
+  const location = useLocation();
+
+  // Check if current path is /dashboard
+  const hideFooterPaths = ["/admin"];
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/events" element={<EventTimeline />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/slots" element={<Booking />} />
+          <Route path="/book" element={<BookingForm />} />
+          <Route path="/dashboard" element={<KumbhMelaMonitor />} />
+          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/lost-found" element={<LostAndFoundPage />} />
+          <Route path="/ar-navigation" element={<SafeZonePage />} />
+        </Routes>
+      </main>
+      {!hideFooterPaths.includes(location.pathname) && <Footer id="footer"/>}
+    </div>
+  );
+}
 
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/events" element={<EventTimeline/>} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/slots" element={<Booking />} />
-            <Route path="/book" element={<BookingForm />} />
-            <Route path="/dashboard" element={<KumbhMelaMonitor />} />
-            <Route path="/lost-found" element={<LostAndFoundPage />} />
-            <Route path="/ar-navigation" element={<SafeZonePage />} />
-              
-            
-          </Routes>
-        </main>
-        <Footer id="footer"/>
-      </div>
+      <AppWrapper />
     </Router>
   );
 }
- 
- 
 
-export default AppWrapper;
+export default App;

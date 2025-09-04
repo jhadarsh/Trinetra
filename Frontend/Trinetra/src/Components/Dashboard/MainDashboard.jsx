@@ -63,10 +63,10 @@ const Popup = ({ ghat, isVisible, position, onClose }) => {
       const formData = new FormData();
       formData.append("image", imageFile);
 
-      console.log(`🚀 Calling API: http://localhost:5000/predict`);
+      console.log(`🚀 Calling API: http://localhost:3000/predict`);
 
       // Call your API with proper error handling
-      const response = await fetch("http://localhost:5000/predict", {
+      const response = await fetch("http://localhost:3000/predict", {
         method: "POST",
         body: formData,
         // Remove Content-Type header - let browser set it for FormData
@@ -207,7 +207,7 @@ const Popup = ({ ghat, isVisible, position, onClose }) => {
 
               {/* Debug Info */}
               <div className="text-xs text-gray-500 mb-2 p-2 bg-gray-50 rounded">
-                📁 Image: {ghatImageFiles[ghat.name]} | 🌐 API: localhost:5000
+                📁 Image: {ghatImageFiles[ghat.name]} | 🌐 API: localhost:3000
               </div>
 
               {/* Loading State */}
