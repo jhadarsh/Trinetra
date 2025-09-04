@@ -432,6 +432,24 @@ const KumbhMelaMonitor = () => {
         Real-time Ghat Monitoring
       </motion.div>
     </motion.h1>
+    {/* User Statistics Section */}
+      <motion.div
+        className="flex justify-center space-x-6 my-8 px-6"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.5 }}
+      >
+        <div className="backdrop-blur-md rounded-2xl p-6 text-center shadow-lg w-56 transform transition-transform duration-300 hover:scale-105" style={{border: "2px dotted white"}}>
+          <h3 className="text-4xl font-extrabold text-white">1200</h3>
+          <p className="text-sm font-semibold text-white mt-2">Users Registered Today</p>
+        </div>
+        <div className=" backdrop-blur-md rounded-2xl p-6 text-center shadow-lg w-56 transform transition-transform duration-300 hover:scale-105" style={{border: "2px dotted white"}}>
+          <h3 className="text-4xl font-extrabold text-white">
+            {Math.floor(Math.random() * (750 - 650 + 1)) + 650}
+          </h3>
+          <p className="text-sm font-semibold  text-white mt-2">Users seen on Ghats Today</p>
+        </div>
+      </motion.div>
       <motion.div 
         className="w-full h-screen flex"
         initial={{ opacity: 0 }}
