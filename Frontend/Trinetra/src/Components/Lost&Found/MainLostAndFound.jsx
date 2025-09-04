@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 const MainLostAndFound = () => {
   const [activeTab, setActiveTab] = useState('lost');
   const [familyMembers, setFamilyMembers] = useState([
-    { id: 'RFID001', name: 'John Doe', distance: '2m' },
-    { id: 'RFID002', name: 'Jane Smith', distance: '5m' },
-    { id: 'RFID003', name: 'Bob Wilson', distance: '1m' }
+    { id: 'RFID001', name: 'Adarsh', distance: '2m' },
+    { id: 'RFID002', name: 'kishan', distance: '5m' },
+    { id: 'RFID003', name: 'manas', distance: '1m' }
   ]);
   const [newMemberRFID, setNewMemberRFID] = useState('');
   const [lostRFID, setLostRFID] = useState('');
@@ -264,12 +264,13 @@ const MainLostAndFound = () => {
                       className="flex items-center justify-center w-full px-4 py-3 bg-white/90 border border-white/40 rounded-xl cursor-pointer hover:bg-white transition-all duration-300 text-gray-800 font-medium shadow-md group text-sm"
                     >
                       <span className="mr-2 group-hover:scale-110 transition-transform duration-300">📷</span>
-                      Upload Image of Lost Item
+                      Upload Image of Lost ones
                     </label>
                   </div>
                   
                   <input
                     type="datetime-local"
+                    placeholder="Last Seen Time"
                     value={lastSeenTime}
                     onChange={(e) => setLastSeenTime(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-white/90 border border-white/40 focus:outline-none focus:ring-3 focus:ring-orange-400/50 text-gray-800 font-medium shadow-md transition-all duration-300 text-sm"
@@ -319,7 +320,7 @@ const MainLostAndFound = () => {
                     type="text"
                     value={foundRFID}
                     onChange={(e) => setFoundRFID(e.target.value)}
-                    placeholder="Enter RFID of found item"
+                    placeholder="Name Of Found items"
                     className="w-full px-4 py-3 rounded-xl bg-white/90 border border-white/40 focus:outline-none focus:ring-3 focus:ring-green-400/50 text-gray-800 font-medium shadow-md transition-all duration-300 text-sm"
                   />
                   

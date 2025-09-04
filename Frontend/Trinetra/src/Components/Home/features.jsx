@@ -31,7 +31,7 @@ const features = [
     popupType: "medical"
   },
   {
-    title: "Suspicious Activity Alerts in App",
+    title: "Suspicious Activity Alerts",
     desc: "AI-powered detection for quick alerts of unusual behavior.",
     icon: <ShieldAlert className="w-10 h-10" />,
     color: "from-yellow-400 to-yellow-600",
@@ -39,8 +39,8 @@ const features = [
     link: "/alerts"
   },
   {
-    title: "AR Navigation - See the Safest Path",
-    desc: "Augmented reality navigation showing safest routes.",
+    title: "Virtual Kumbh Tour & Safety Training",
+    desc: "Virtual Kumbh tour with facility locations and safety training videos.",
     icon: <Navigation className="w-10 h-10" />,
     color: "from-blue-400 to-blue-600",
     bgColor: "bg-gradient-to-br from-blue-50 to-blue-100",

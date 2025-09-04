@@ -11,6 +11,7 @@ import KumbhMelaMonitor from "./Pages/HeatMap_Dashboard";
 import LostAndFoundPage from "./Pages/LostAndFoundPage";
 import SafeZonePage from "./Pages/SafeZonePage";
 import Dashboard from "./authority/dashboard";
+import Guide from "./Pages/Guide";
 
 
 function AppWrapper() {
@@ -37,6 +38,7 @@ function AppWrapper() {
         </Routes>
       </main>
       {!hideFooterPaths.includes(location.pathname) && <Footer id="footer"/>}
+      <Guide/>
     </div>
   );
 }
@@ -46,6 +48,7 @@ function App() {
     <Router>
       <AppWrapper />
     </Router>
+     
   );
 }
 

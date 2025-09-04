@@ -222,17 +222,7 @@ export default function Footer() {
         transition={{ duration: 0.6, delay: 0.8 }}
         viewport={{ once: true }}
       >
-        <p className="text-gray-500 flex items-center justify-center">
-          Made with 
-          <motion.span 
-            className="mx-2 text-red-500"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 1, repeat: Infinity }}
-          >
-            ❤️
-          </motion.span> 
-          for safer communities
-        </p>
+        
       </motion.div>
     </motion.div>
   </motion.div>

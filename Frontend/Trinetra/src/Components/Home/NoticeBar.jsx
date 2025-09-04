@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 
 const headlines = [
-  "Results of Round 1 (Idea Submission) will be announced on 25th August 2025.",
-  "Thank you for the overwhelming response; deadline extended till August 15, 2025."
+  "Maha Kumbh Mela 2025: Over 50 million pilgrims expected - plan your journey in advance.",
+  "Digital passes now mandatory for Maha Kumbh - apply online before September 30th, 2025."
 ];
+
 
 export default function NoticeBar() {
   const [isPlaying, setIsPlaying] = useState(true);

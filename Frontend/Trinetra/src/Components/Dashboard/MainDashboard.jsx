@@ -8,18 +8,18 @@ const Popup = ({ ghat, isVisible, position, onClose }) => {
 
   // Fixed image paths - Remove leading slash if using public folder
   const ghatImageFiles = {
-    "Har Ki Pauri": "testing1.png",
-    "Dashashwamedh": "testing2.jpg",
-    "Manikarnika": "testing3.jpg",
-    "Assi Ghat": "testing6.jpg",
+    "Ram Ghat": "testing1.png",
+    "Harsiddhi Ghat": "testing2.jpg",
+    "Kailash Ghat": "testing3.jpg",
+    "Ganga Ghat": "testing6.jpg",
   };
 
   const ghatDisplayImages = {
     "Har Ki Pauri":
       "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=200&fit=crop",
-    Dashashwamedh:
+    "Dashashwamedh":
       "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=400&h=200&fit=crop",
-    Manikarnika:
+    "Manikarnika":
       "https://images.unsplash.com/photo-1512813195386-6cf811ad3542?w=400&h=200&fit=crop",
     "Assi Ghat":
       "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop",
@@ -127,6 +127,53 @@ const Popup = ({ ghat, isVisible, position, onClose }) => {
     }
   }, [ghat, isVisible]);
 
+  const ghatMaxLimits = {
+    "Ram Ghat": 170,
+    "Harsiddhi Ghat":200,
+    "Kailash Ghat": 170,
+    "Ganga Ghat": 300,
+  };
+
+  const getDensityStatusByGhat = (predictedCount, ghatName) => {
+    const maxLimit = ghatMaxLimits[ghatName] || 170; // Default to 170 if ghat not found
+    const mediumThreshold = maxLimit - 20;
+    const lowThreshold = maxLimit - 40;
+
+    if (predictedCount >= maxLimit) {
+      return {
+        label: "High Density",
+        color: "text-red-600",
+        bgColor: "bg-gradient-to-br from-red-50 to-red-100",
+        icon: "🔴",
+        border: "border-red-200",
+        message: "🚫 Do not go to this ghat, it is highly crowded.",
+        messageColor: "text-red-700",
+        status: "AVOID",
+      };
+    } else if (predictedCount >= mediumThreshold) {
+      return {
+        label: "Medium Density",
+        color: "text-yellow-600",
+        bgColor: "bg-gradient-to-br from-yellow-50 to-yellow-100",
+        icon: "🟡",
+        border: "border-yellow-200",
+        message: "⚠️ You can go with some precautions.",
+        messageColor: "text-yellow-700",
+        status: "CAUTION",
+      };
+    } else {
+      return {
+        label: "Low Density",
+        color: "text-green-600",
+        bgColor: "bg-gradient-to-br from-green-50 to-green-100",
+        icon: "🟢",
+        border: "border-green-200",
+        message: "✅ You can safely go to this ghat.",
+        messageColor: "text-green-700",
+        status: "SAFE",
+      };
+    }
+  };
   const getDensityInfo = (congestionData) => {
     if (!congestionData)
       return {
@@ -176,224 +223,253 @@ const Popup = ({ ghat, isVisible, position, onClose }) => {
     <>
       {ghat && isVisible && (
         <>
-          {/* Backdrop */}
+          {/* Enhanced Backdrop */}
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] flex items-center justify-center"
             onClick={onClose}
-          />
-
-          {/* Centered Popup */}
-          <div
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 animate-in duration-300 ease-out"
-            style={{
-              animation: "fadeInScale 0.3s ease-out forwards",
-            }}
           >
-            <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-6 w-96 max-h-[90vh] overflow-y-auto border-2 border-orange-200 shadow-2xl relative">
-              {/* Decorative elements */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400"></div>
+            {/* Centered Popup Container */}
+            <div
+              className="relative z-[9999] m-4 max-w-md w-full animate-in duration-300 ease-out"
+              onClick={(e) => e.stopPropagation()} // Prevent backdrop click when clicking popup
+              style={{
+                animation: "fadeInScale 0.3s ease-out forwards",
+              }}
+            >
+              <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-6 max-h-[90vh] overflow-y-auto border-2 border-orange-200 shadow-2xl relative">
+                {/* Decorative elements */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400"></div>
 
-              {/* Close button */}
-              <button
-                onClick={onClose}
-                className="absolute top-4 right-4 w-8 h-8 bg-orange-100 hover:bg-orange-200 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-md z-10"
-              >
-                <span className="text-orange-600 font-bold">✕</span>
-              </button>
+                {/* Close button */}
+                <button
+                  onClick={onClose}
+                  className="absolute top-4 right-4 w-8 h-8 bg-orange-100 hover:bg-orange-200 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-md z-10"
+                >
+                  <span className="text-orange-600 font-bold">✕</span>
+                </button>
 
-              <div className="text-xl font-bold text-orange-800 text-center mb-4 pr-8">
-                🕉️ {ghat.name}
-              </div>
-
-              {/* Debug Info */}
-              <div className="text-xs text-gray-500 mb-2 p-2 bg-gray-50 rounded">
-                📁 Image: {ghatImageFiles[ghat.name]} | 🌐 API: localhost:3000
-              </div>
-
-              {/* Loading State */}
-              {loading && (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-                  <p className="text-orange-600 font-medium">
-                    Analyzing crowd density...
-                  </p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Processing {ghatImageFiles[ghat.name]}
-                  </p>
+                <div className="text-xl font-bold text-orange-800 text-center mb-4 pr-8">
+                  🕉️ {ghat.name}
                 </div>
-              )}
 
-              {/* Error State */}
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
-                  <p className="text-red-600 text-center font-semibold">
-                    ❌ Error
-                  </p>
-                  <p className="text-red-700 text-sm mt-1">{error}</p>
-                  <div className="mt-3 space-y-2">
+                {/* Rest of your existing content remains the same */}
+                {/* Debug Info */}
+
+                {/* Loading State */}
+                {loading && (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                    <p className="text-orange-600 font-medium">
+                      Analyzing crowd density...
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Processing {ghatImageFiles[ghat.name]}
+                    </p>
+                  </div>
+                )}
+
+                {/* Error State */}
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+                    <p className="text-red-600 text-center font-semibold">
+                      ❌ Error
+                    </p>
+                    <p className="text-red-700 text-sm mt-1">{error}</p>
+                    <div className="mt-3 space-y-2">
+                      <button
+                        onClick={() => fetchCrowdData(ghat.name)}
+                        className="w-full px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors"
+                      >
+                        🔄 Retry Analysis
+                      </button>
+                      <button
+                        onClick={() => testImageAccess(ghat.name)}
+                        className="w-full px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors text-sm"
+                      >
+                        🧪 Test Image Access
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* API Data Display */}
+                {apiData && !loading && (
+                  <>
+                    {/* Heatmap Image */}
+                    <div className="w-full h-48 rounded-xl mb-4 overflow-hidden border-2 border-orange-200 shadow-lg relative">
+                      <img
+                        src={`data:image/png;base64,${apiData.images.heatmap_overlay}`}
+                        alt="Crowd Heatmap"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          console.log("🖼️ Heatmap image failed to load");
+                          e.target.style.display = "none";
+                        }}
+                      />
+                      <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                        Population density image
+                      </div>
+                    </div>
+
+                    {/* Population Count from API */}
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 mb-3 text-center border border-blue-200 shadow-sm">
+                      <div className="text-sm text-blue-600 mb-1 font-medium">
+                        Total Detected Count
+                      </div>
+                      <div className="text-2xl font-bold text-blue-800">
+                        {Math.round(apiData.predicted_count || 0)} People
+                      </div>
+                      <div className="text-sm text-blue-600 mb-1 font-medium">
+                        Maximum limits of People
+                      </div>
+                      <div className="text-2xl font-bold text-blue-800">
+                        {ghatMaxLimits[ghat.name]} People
+                      </div>
+                    </div>
+
+                    {(() => {
+                      const predictedCount = Math.round(
+                        apiData.predicted_count || 0
+                      );
+                      const maxLimit = ghatMaxLimits[ghat.name] || 170;
+                      const densityStatus = getDensityStatusByGhat(
+                        predictedCount,
+                        ghat.name
+                      );
+
+                      return (
+                        <div
+                          className={`${densityStatus.bgColor} rounded-xl p-4 text-center border-2 ${densityStatus.border} shadow-sm mb-3`}
+                        >
+                          {/* Header */}
+                          <div className="flex items-center justify-center mb-2">
+                            <span className="text-xl mr-2">
+                              {densityStatus.icon}
+                            </span>
+                            <div className="text-sm font-medium opacity-70">
+                              Crowd Density Status
+                            </div>
+                          </div>
+
+                          {/* Density Level */}
+                          <div
+                            className={`text-lg font-bold ${densityStatus.color} mb-3`}
+                          >
+                            {densityStatus.label}
+                          </div>
+
+                          {/* Count vs Limit Display */}
+                          <div className="bg-white/60 rounded-lg p-3 mb-3 border border-white/40">
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="font-medium text-gray-600">
+                                Current Count:
+                              </span>
+                              <span
+                                className={`font-bold text-lg ${densityStatus.color}`}
+                              >
+                                {predictedCount}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm mt-1">
+                              <span className="font-medium text-gray-600">
+                                Max Capacity:
+                              </span>
+                              <span className="font-bold text-gray-700">
+                                {maxLimit}
+                              </span>
+                            </div>
+
+                            {/* Progress Bar */}
+                            <div className="mt-3">
+                              <div className="flex justify-between text-xs text-gray-500 mb-1">
+                                <span>0</span>
+                                <span>{maxLimit}</span>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div
+                                  className={`h-2 rounded-full transition-all duration-500 ${
+                                    densityStatus.status === "AVOID"
+                                      ? "bg-red-500"
+                                      : densityStatus.status === "CAUTION"
+                                      ? "bg-yellow-500"
+                                      : "bg-green-500"
+                                  }`}
+                                  style={{
+                                    width: `${Math.min(
+                                      (predictedCount / maxLimit) * 100,
+                                      100
+                                    )}%`,
+                                  }}
+                                ></div>
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1 text-center">
+                                {((predictedCount / maxLimit) * 100).toFixed(1)}
+                                % capacity
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Recommendation Message */}
+                          <div
+                            className={`text-sm font-semibold ${densityStatus.messageColor} leading-relaxed`}
+                          >
+                            {densityStatus.message}
+                          </div>
+
+                          {/* Additional Info */}
+                          <div className="mt-3 text-xs text-gray-600 bg-white/40 rounded-lg p-2">
+                            <div className="flex justify-between">
+                              <span>🟢 Safe: &lt; {maxLimit - 40}</span>
+                              <span>
+                                🟡 Caution: {maxLimit - 20}-{maxLimit - 1}
+                              </span>
+                              <span>🔴 Avoid: ≥ {maxLimit}</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    {/* Density Statistics */}
+
+                    {/* Refresh Button */}
                     <button
                       onClick={() => fetchCrowdData(ghat.name)}
-                      className="w-full px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors"
+                      className="w-full mt-3 px-4 py-2 bg-gradient-to-r from-orange-400 to-yellow-400 hover:from-orange-500 hover:to-yellow-500 text-black font-semibold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-98"
                     >
-                      🔄 Retry Analysis
+                      Refresh Analysis
                     </button>
-                    <button
-                      onClick={() => testImageAccess(ghat.name)}
-                      className="w-full px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors text-sm"
-                    >
-                      🧪 Test Image Access
-                    </button>
-                  </div>
-                </div>
-              )}
+                  </>
+                )}
 
-              {/* API Data Display */}
-              {apiData && !loading && (
-                <>
-                  {/* Heatmap Image */}
-                  <div className="w-full h-48 rounded-xl mb-4 overflow-hidden border-2 border-orange-200 shadow-lg relative">
-                    <img
-                      src={`data:image/png;base64,${apiData.images.heatmap_overlay}`}
-                      alt="Crowd Heatmap"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        console.log("🖼️ Heatmap image failed to load");
-                        e.target.style.display = "none";
-                      }}
-                    />
-                    <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                      🎨 AI Generated Heatmap
-                    </div>
-                  </div>
-
-                  {/* Population Count from API */}
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 mb-3 text-center border border-blue-200 shadow-sm">
-                    <div className="text-sm text-blue-600 mb-1 font-medium">
-                      👥 AI Detected Count
-                    </div>
-                    <div className="text-2xl font-bold text-blue-800">
-                      {Math.round(apiData.predicted_count || 0)} People
-                    </div>
-                  </div>
-
-                  {/* Congestion Analysis from API */}
+                {/* Fallback to original image if no API data */}
+                {!apiData && !loading && !error && (
                   <div
-                    className={`${
-                      getDensityInfo(apiData.congestion_analysis).bgColor
-                    } rounded-xl p-4 text-center border-2 ${
-                      getDensityInfo(apiData.congestion_analysis).border
-                    } shadow-sm mb-3`}
-                  >
-                    <div className="flex items-center justify-center mb-2">
-                      <span className="text-lg mr-2">
-                        {getDensityInfo(apiData.congestion_analysis).icon}
-                      </span>
-                      <div className="text-sm font-medium opacity-70">
-                        Congestion Level
-                      </div>
-                    </div>
-                    <div
-                      className={`text-lg font-bold ${
-                        getDensityInfo(apiData.congestion_analysis).color
-                      }`}
-                    >
-                      {getDensityInfo(apiData.congestion_analysis).label}
-                    </div>
-
-                    {/* Detailed Congestion Breakdown */}
-                    {apiData.congestion_analysis && (
-                      <div className="mt-3 text-xs space-y-1">
-                        <div className="flex justify-between">
-                          <span className="flex items-center">
-                            <span className="text-red-500 mr-1">🔴</span>High:
-                          </span>
-                          <span className="font-bold">
-                            {(
-                              apiData.congestion_analysis
-                                .high_congestion_percent || 0
-                            ).toFixed(1)}
-                            %
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="flex items-center">
-                            <span className="text-yellow-500 mr-1">🟡</span>
-                            Medium:
-                          </span>
-                          <span className="font-bold">
-                            {(
-                              apiData.congestion_analysis
-                                .medium_congestion_percent || 0
-                            ).toFixed(1)}
-                            %
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="flex items-center">
-                            <span className="text-green-500 mr-1">🟢</span>Low:
-                          </span>
-                          <span className="font-bold">
-                            {(
-                              apiData.congestion_analysis
-                                .low_congestion_percent || 0
-                            ).toFixed(1)}
-                            %
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Density Statistics */}
-                  {apiData.density_statistics && (
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200 shadow-sm">
-                      <div className="text-sm font-medium text-purple-700 mb-2 text-center">
-                        📊 Density Statistics
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className="text-center">
-                          <div className="text-purple-600 font-bold">
-                            {(
-                              apiData.density_statistics.max_density || 0
-                            ).toFixed(3)}
-                          </div>
-                          <div className="text-purple-500">Max Density</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-purple-600 font-bold">
-                            {(
-                              apiData.density_statistics.avg_density || 0
-                            ).toFixed(3)}
-                          </div>
-                          <div className="text-purple-500">Avg Density</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Refresh Button */}
-                  <button
-                    onClick={() => fetchCrowdData(ghat.name)}
-                    className="w-full mt-3 px-4 py-2 bg-gradient-to-r from-orange-400 to-yellow-400 hover:from-orange-500 hover:to-yellow-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-98"
-                  >
-                    🔄 Refresh Analysis
-                  </button>
-                </>
-              )}
-
-              {/* Fallback to original image if no API data */}
-              {!apiData && !loading && !error && (
-                <div
-                  className="w-full h-32 rounded-xl mb-4 bg-cover bg-center border-2 border-orange-200 overflow-hidden shadow-lg"
-                  style={{
-                    backgroundImage: `url(${ghatDisplayImages[ghat.name]})`,
-                  }}
-                />
-              )}
+                    className="w-full h-32 rounded-xl mb-4 bg-cover bg-center border-2 border-orange-200 overflow-hidden shadow-lg"
+                    style={{
+                      backgroundImage: `url(${ghatDisplayImages[ghat.name]})`,
+                    }}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </>
       )}
+
+      {/* Add this CSS animation if not already present */}
+      <style jsx>{`
+        @keyframes fadeInScale {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+      `}</style>
     </>
   );
 };
@@ -404,25 +480,25 @@ const Ghats = ({ onGhatClick }) => {
     // Position these manually on your background image
     {
       id: 1,
-      name: "Har Ki Pauri",
+      name: "Ram Ghat",
       population: 45000,
       position: { top: "40%", left: "20%" },
     },
     {
       id: 2,
-      name: "Dashashwamedh",
+      name: "Harsiddhi Ghat",
       population: 85000,
       position: { top: "60%", left: "10%" },
     },
     {
       id: 3,
-      name: "Assi Ghat",
+      name: "Kailash Ghat",
       population: 35000,
       position: { top: "60%", right: "10%" },
     },
     {
       id: 4,
-      name: "Manikarnika",
+      name: "Ganga Ghat",
       population: 95000,
       position: { top: "40%", right: "15%" },
     },

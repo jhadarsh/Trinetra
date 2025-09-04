@@ -172,7 +172,7 @@ const Header = () => {
           <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 cursor-pointer group">
             <span className="text-black/80 text-sm">Toll Free:</span>
             <span className="text-black font-bold text-sm group-hover:text-yellow-600 transition-colors duration-300">
-              1800-HELP-NOW
+              1800-00-123
             </span>
           </div>
           

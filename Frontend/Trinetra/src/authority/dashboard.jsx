@@ -44,7 +44,7 @@ import {
 import CameraSearch from './components/Camera';  
 import DensityDashboard from './components/DensityDashboard'; 
 import Traffic from './components/Traffic'; 
-
+import PalmDetectionComponent from './components/PalmDetectionComponent';
 
 // --- Extracted original dashboard view ---
 const DashboardOverview = () => {
@@ -387,6 +387,7 @@ const menuItems = [
   { id: 'cameraSearch', text: 'Camera Search', icon: <PeopleIcon /> },
   { id: 'DensityDashboard', text: 'Density Analyser', icon: <AssessmentIcon /> },
   { id: 'feature3Analytics', text: 'Route Control', icon: <TrafficIcon /> },
+  { id: 'feature4SOS', text: 'SOS Alerts', icon: <Warning /> },
 ];
 
 const viewComponents = {
@@ -394,6 +395,7 @@ const viewComponents = {
   cameraSearch: <CameraSearch />,
   DensityDashboard: <DensityDashboard />,
   feature3Analytics: <Traffic />,
+  feature4SOS: <PalmDetectionComponent />,
 };
 
 
