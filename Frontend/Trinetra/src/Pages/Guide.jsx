@@ -32,7 +32,7 @@ const UI_TEXT = {
   op5: "Voice Guide",
   op6: "Video Guide",
   op7: "Why use us ?",
-  op8: "Our website offers a range of helpful features for industrial logistics management. Dashboard – to get an overview of your operations, Fleet Booking – to book transportation for your stocks, Warehouse Finder – to locate warehouses near you for stock storage, Stock Data Analytics – to get future stock data for each warehouse and avoid last-minute complications, Language Change – to switch the website into your preferred language, and more. Explore freely and speak your needs anytime.",
+  op8: "Jai Mahakal! Our sacred digital platform serves devotees and pilgrims during the holy Mahakumbh in Ujjain with blessed technological guidance. Live Ghat Monitoring – to view real-time crowd density at various ghats for peaceful darshan planning, Lost & Found Service – to reunite separated family members and locate missing belongings instantly, Emergency Medical SOS – for immediate healthcare assistance during your spiritual journey, Safety Alert System – to receive important notifications about crowd movement and safety updates, Virtual Mahakumbh Darshan – to experience the divine atmosphere and learn about safety protocols from anywhere, Multilingual Divine Assistant – our chatbot speaks your language to guide you through this sacred experience, and many more blessed features. Navigate with devotion and seek assistance whenever needed on your spiritual path.",
   selectLanguage: "Select Language",
   languageLabel: "Preferred Language:",
 };
