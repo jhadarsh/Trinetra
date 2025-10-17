@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  ॐ **Welcome to Trinetra** ॐ 
+  ॐ  Welcome to Trinetra ॐ 
 </p>
 
 # Trinetra: The AI That Safeguards Faith
